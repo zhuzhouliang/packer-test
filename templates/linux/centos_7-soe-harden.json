@@ -1,0 +1,68 @@
+{
+  "variables": {
+    "region_key": "{{env `ALICLOUD_REGION`}}",
+    "image_name": "{{env `ALICLOUD_IMAGE-NAME`}}",
+    "ssh_password": "{{env `INITIAL_SSH_PASSWORD`}}",
+    "access_key": "{{env `ALICLOUD_ACCESS_KEY`}}",
+    "secret_key": "{{env `ALICLOUD_SECRET_KEY`}}"
+  },
+  "builders": [{
+    "type":"alicloud-ecs",
+    "access_key":"{{user `access_key`}}",
+    "secret_key":"{{user `secret_key`}}",
+    "region":"{{user `region_key`}}",
+    "image_name":"{{user `image_name`}}",
+    "source_image":"centos_7_03_64_20G_alibase_20170818.vhd",
+    "ssh_username":"root",
+    "instance_type":"ecs.n1.tiny",
+    "internet_charge_type":"PayByTraffic",
+    "io_optimized":"true"
+  }],
+  "provisioners": [
+    {
+    "type": "shell",
+    "inline": [
+	  "rm -rf /tmp/soe_harden",
+      "mkdir /tmp/soe_harden"
+      ]
+    }
+	,
+   {
+    "type": "file",
+    "source": "templates/linux/",
+    "destination": "/tmp/soe_harden"	
+   }
+   ,
+   {
+    "type": "file",
+    "source": "scripts/linux/",
+    "destination": "/tmp/soe_harden"	
+   }
+   ,
+   {
+    "type": "file",
+    "source": "data/linux/",
+    "destination": "/tmp/soe_harden"
+   }
+   ,   
+    {
+    "type": "shell",
+    "inline": [
+      "sleep 30",
+      "cd /tmp/soe_harden",
+	  "chmod 755 RH-install-base-utilities.sh",
+	  "./RH-install-base-utilities.sh"
+      ]
+    }
+	,     
+    {
+    "type": "shell",
+    "inline": [
+      "sleep 30",
+      "cd /tmp/soe_harden",
+	  "chmod 755 AL-install-CSCDATA.sh",
+	  "./AL-install-CSCDATA.sh"
+      ]
+    }
+  ]
+}

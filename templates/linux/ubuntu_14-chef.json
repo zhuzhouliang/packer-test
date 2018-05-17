@@ -1,0 +1,40 @@
+{
+  "variables": {
+    "region_key": "{{env `ALICLOUD_REGION`}}",
+    "image_name": "{{env `ALICLOUD_IMAGE-NAME`}}",
+    "ssh_password": "{{env `INITIAL_SSH_PASSWORD`}}",
+    "access_key": "{{env `ALICLOUD_ACCESS_KEY`}}",
+    "secret_key": "{{env `ALICLOUD_SECRET_KEY`}}"
+  },
+  "builders": [{
+    "type":"alicloud-ecs",
+    "access_key":"{{user `access_key`}}",
+    "secret_key":"{{user `secret_key`}}",
+    "region":"{{user `region_key`}}",
+    "image_name":"{{user `image_name`}}",
+    "source_image":"ubuntu_14_0405_64_20G_alibase_20170824.vhd",
+    "ssh_username":"root",
+    "instance_type":"ecs.n1.medium",
+    "io_optimized":"true",
+    "image_force_delete":"true",
+    "internet_charge_type":"PayByTraffic",
+    "ssh_password":"{{user `ssh_password`}}"
+    "user_data_file":"templates/ubuntu_14-chef-user_data.sh"
+  }],
+  "provisioners": [
+   {
+    "type": "file",
+    "source": "templates/ubuntu_14-chef-conf.sh",
+    "destination": "/root/"	
+   }
+   ,
+   {
+    "type": "shell",
+    "inline": [
+	"cd /root/",
+    "chmod 755 ubuntu_14-chef-conf.sh",
+	"./chef.sh",
+    "chef-server-ctl  reconfigure"
+    ]
+  }]
+}

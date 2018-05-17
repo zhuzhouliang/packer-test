@@ -1,0 +1,82 @@
+
+{
+  "variables": {
+    "region_key": "{{env `ALICLOUD_REGION`}}",
+    "image_name": "{{env `ALICLOUD_IMAGE-NAME`}}",
+	"win_password": "{{env `INITIAL_WIN_PASSWORD`}}",
+    "access_key": "{{env `ALICLOUD_ACCESS_KEY`}}",
+    "secret_key": "{{env `ALICLOUD_SECRET_KEY`}}"
+  },
+  "builders": [{
+    "type":"alicloud-ecs",
+    "access_key":"{{user `access_key`}}",
+    "secret_key":"{{user `secret_key`}}",
+    "region":"{{user `region_key`}}",
+    "image_name":"{{user `image_name`}}",
+    "source_image":"m-bp19fz4ninlh7sojldoe",
+    "instance_type":"ecs.n1.tiny",
+    "io_optimized":"true",
+    "internet_charge_type":"PayByTraffic",
+    "image_force_delete":"true",
+    "communicator": "winrm",
+    "winrm_port": 5985,
+    "winrm_username": "Administrator",
+    "winrm_password": "{{user `secret_key`}}"
+  }],
+  "provisioners": [
+    {
+    "type": "powershell",
+    "inline": [
+      "mkdir C:\\Temp\\soe_harden"
+      ]
+    }
+	,
+   {
+    "type": "file",
+    "source": "templates/windows/",
+    "destination": "C:\\Temp\\soe_harden"	
+   }
+   ,
+   {
+    "type": "file",
+    "source": "scripts/windows/",
+    "destination": "C:\\Temp\\soe_harden"	
+   }
+   ,
+   {
+    "type": "file",
+    "source": "data/windows/",
+    "destination": "C:\\Temp\\soe_harden"
+   }
+   ,   
+  
+  {
+      "type": "powershell",
+      "inline": [
+				"New-Item -ItemType directory -Path 'C:\\Temp\\soe_harden' -Force ",
+				"[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 ",
+				"$src = 'https://www.python.org/ftp/python/3.7.0/python-3.7.0b4-amd64-webinstall.exe' ",
+				"$des = 'c:\\Temp\\soe_harden\\python-3.7.0b4-amd64-webinstall.exe' ",
+				"Invoke-WebRequest -Uri $src -OutFile $des ",
+				"$work='c:\\Temp\\soe_harden\\python-3.7.0b4-amd64-webinstall.exe /quiet /passive InstallAllUsers=1 PrependPath=1' ",
+				"iex $work ",
+				"Start-Sleep -s 160 ",
+				"$PATH=[Environment]::GetEnvironmentVariable('PATH')",
+				"Write-Host $PATH"
+
+		
+	  ]
+  }
+  ,
+  {
+      "type": "powershell",
+      "inline": [
+				"cd c:\\temp\\soe_harden ",
+				".\\install_win2012_soe.ps1"
+		
+	  ]
+  }
+  
+  
+  ]
+}
