@@ -1,7 +1,7 @@
 {
   "variables": {
     "region_key": "{{env `ALICLOUD_REGION`}}",
-    "image_name": "{{env `ALICLOUD_IMAGE-NAME`}}",
+    "image_name": "{{env `ALICLOUD_IMAGE_NAME`}}",
     "ssh_password": "{{env `INITIAL_SSH_PASSWORD`}}",
     "access_key": "{{env `ALICLOUD_ACCESS_KEY`}}",
     "secret_key": "{{env `ALICLOUD_SECRET_KEY`}}"
