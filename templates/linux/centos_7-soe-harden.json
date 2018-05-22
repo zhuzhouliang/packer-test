@@ -64,5 +64,15 @@
 	  "./cloud-monitor-agent-64.sh"
       ]
     }
+	,     
+    {
+    "type": "shell",
+    "inline": [
+      "sleep 30",
+      "wget http://logtail-release.oss-{{user `region_key`}}-internal.aliyuncs.com/linux64/logtail.sh -O logtail.sh",
+	  "chmod 755 logtail.sh",
+	  "sh logtail.sh install {{user `region_key`}}_vpc"
+      ]
+    }	
   ]
 }
