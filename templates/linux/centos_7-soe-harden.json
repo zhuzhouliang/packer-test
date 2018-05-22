@@ -60,8 +60,8 @@
     "inline": [
       "sleep 30",
       "cd /tmp/soe_harden",
-	  "chmod 755 AL-install-CSCDATA.sh",
-	  "./AL-install-CSCDATA.sh"
+	  "chmod 755 cloud-monitor-agent-64.sh",
+	  "./cloud-monitor-agent-64.sh"
       ]
     }
   ]
