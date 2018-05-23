@@ -76,7 +76,33 @@
 		
 	  ]
   }
-  
+    ,
+  {
+      "type": "powershell",
+      "inline": [
+				"cd c:\\temp\\soe_harden ",
+				".\\monitor-agent.ps1"
+		
+	  ]
+  }
+    ,
+  {
+      "type": "powershell",
+      "inline": [
+				"cd c:\\temp\\soe_harden ",
+				".\\logtail.ps1 {{user `region_key`}}"
+		
+	  ]
+  }
+    ,
+  {
+      "type": "powershell",
+      "inline": [
+				"cd c:\\temp\\soe_harden ",
+				".\\nxlog.ps1"
+		
+	  ]
+  }
   
   ]
 }
